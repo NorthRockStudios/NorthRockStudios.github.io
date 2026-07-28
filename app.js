@@ -7,36 +7,36 @@
    ============================================================ */
 const PROJECTS = [
   {
-    title: "Modular gameplay framework",
-    tag: "Data-driven actor composition, arrived at independently of Epic's Lyra.",
+    title: "Modular UObject Components",
+    tag: "Data-driven actor composition controlled through FGameplayTag()'s",
     stat: "0 subclasses per mode",
     video: null,
     problem:
       "Game modes usually mean subclassing the core actors — a new AGameMode, PlayerController, and so on per mode. That doesn't scale and it hard-codes behavior into inheritance.",
     approach:
-      "Bare-bones core actors carry no logic. A single GameMode FGameplayTag resolves to a DataTable row listing the net-replicated UObject components each actor type needs. Adding or removing a mode's behavior is editing a tag list — no C++ subclasses. A distributed handshake around seamless travel tears down departing components pre-travel and builds new ones post-world-load, each phase gated on all-client RPC acknowledgment with a configurable timeout that drops stragglers. Stably-named components let replicated references resolve by name across server and client.",
+      "Bare-bones core actors carry no logic. A single GameMode FGameplayTag() resolves to a DataTable row listing the net-replicated UObject components each actor type needs. Adding or removing a mode's behavior is editing a tag list — no C++ subclasses. A distributed handshake around seamless travel tears down departing components pre-travel and builds new ones post-world-load, each phase gated on all-client RPC acknowledgment with a configurable timeout that drops stragglers. Stably-named components let replicated references resolve by name across server and client.",
     result:
       "Whole game modes are defined in data. The architecture parallels Epic's Game Features / Modular Gameplay system used in Lyra — reached from first principles.",
     tags: ["C++", "Modular Gameplay", "Replication", "Seamless travel", "Gameplay Tags"],
     source: null,
   },
   {
-    title: "4-byte network handle",
-    tag: "A tag-addressable DataTable registry where any row is a 4-byte reference on the wire.",
+    title: "ID Driven UDataTable",
+    tag: "A tag-addressable DataTable registry where any row is accessible using a 4-byte Id.",
     stat: "≈ [95]% less bandwidth",
     video: null,
     problem:
-      "Replicating a reference to data-driven content (an item, an ability) normally means sending a soft object path or FName — bulky, and it grows with the payload.",
+      "Replicating a reference to data-driven content (an item, an ability) normally means sending a soft object path or NetGUID, and it grows with the payload.",
     approach:
-      "A globally accessible DataTable registry addressable by FGameplayTag lets any system fetch any table from anywhere, no hard references. Each row is identified by a 4-byte handle struct that encodes table + row. Clients resolve the handle locally to the exact row; heavy data never travels.",
+      "A globally accessible DataTable registry addressable via FGameplayTag() or FGlobalDataID() lets any system fetch any table or row from anywhere, no hard references. Each row is identified by a 4-byte handle struct that encodes table Id + row Id. Clients resolve the handle locally to the exact row; heavy data never travels.",
     result:
       "A constant [4] bytes per reference regardless of payload size — roughly [95]% smaller than [soft object path] replication. [Measured: X bytes vs Y bytes for Z.]",
     tags: ["C++", "NetSerialize", "DataTables", "Gameplay Tags", "Bandwidth"],
     source: null,
   },
   {
-    title: "Custom ability system",
-    tag: "A GAS-equivalent framework — attributes, effects, tag-driven activation — built from scratch.",
+    title: "Light-weight GAS",
+    tag: "A customized light-weight GAS framework that has been heavily modified to reduce bandwidth usage.",
     stat: "[N] ability types",
     video: null,
     problem:
@@ -49,7 +49,7 @@ const PROJECTS = [
     source: null,
   },
   {
-    title: "Custom UI framework",
+    title: "UI framework",
     tag: "A CommonUI-style framework written directly on the Slate layer, not the UMG designer.",
     stat: "hand-written Slate",
     video: null,
@@ -63,7 +63,7 @@ const PROJECTS = [
     source: null,
   },
   {
-    title: "Replicated inventory",
+    title: "FAS Inventory System",
     tag: "Multiple inventory types over Fast Array Serialization, each item a 4-byte handle.",
     stat: "delta-only sync",
     video: null,
