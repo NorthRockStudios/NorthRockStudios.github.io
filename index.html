@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[Your Name] — Unreal Engine C++ / Gameplay Systems</title>
+  <meta name="description" content="C++ systems programmer specializing in Unreal Engine gameplay frameworks, network replication, and UI." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#systems">Skip to systems</a>
+
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Unreal Engine · C++ · Gameplay systems</p>
+      <h1 class="hero-title">[Your Name]</h1>
+      <p class="hero-lede">
+        I build the systems other gameplay programmers build on &mdash; custom replication,
+        data-driven gameplay frameworks, and UI from the Slate layer up. Self-directed, in C++,
+        for Unreal Engine 5.
+      </p>
+
+      <nav class="links" aria-label="Profile links">
+        <a href="[GITHUB_URL]"><span class="mono">↳</span> GitHub</a>
+        <a href="[RESUME_URL]"><span class="mono">↳</span> Résumé (PDF)</a>
+        <a href="[REEL_URL]"><span class="mono">↳</span> Demo reel</a>
+        <a href="mailto:[EMAIL]"><span class="mono">↳</span> Email</a>
+      </nav>
+
+      <!-- Signature: the wire motif — heavy reference vs. the 4-byte handle -->
+      <figure class="wire" aria-label="Bandwidth comparison: a full object reference is 50 or more bytes on the wire; the custom handle is 4 bytes.">
+        <div class="wire-row is-old">
+          <span class="wire-label mono">soft object path</span>
+          <span class="bytes" aria-hidden="true">
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          </span>
+          <span class="wire-size mono">≈ [50]+ bytes</span>
+        </div>
+        <div class="wire-row is-new">
+          <span class="wire-label mono">custom handle</span>
+          <span class="bytes" aria-hidden="true">
+            <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i>
+          </span>
+          <span class="wire-size mono">4 bytes</span>
+        </div>
+      </figure>
+    </div>
+  </header>
+
+  <main>
+    <section id="systems" class="section">
+      <div class="wrap">
+        <p class="eyebrow">Featured systems</p>
+        <h2 class="section-title">Six things I designed and shipped, solo.</h2>
+        <div class="grid" id="grid"><!-- cards injected by app.js --></div>
+      </div>
+    </section>
+
+    <section id="about" class="section section--about">
+      <div class="wrap about-grid">
+        <div>
+          <p class="eyebrow">About</p>
+          <h2 class="section-title">Depth over breadth of employers.</h2>
+          <p class="prose">
+            No shipped commercial titles yet &mdash; what I have instead is a set of engine-level
+            systems I designed from first principles and can defend on a whiteboard. Several of them
+            converged, independently, on the same architectures Epic reached for in Lyra.
+            I care about what happens on the wire, at the subobject level, and in the frames
+            nobody profiles until it breaks.
+          </p>
+        </div>
+        <div>
+          <p class="eyebrow">Stack</p>
+          <ul class="stack">
+            <li><span class="mono">lang</span> C++ · Blueprint</li>
+            <li><span class="mono">net</span> Legacy replication · Iris · Fast Array Serialization · custom NetSerialize · subobject replication</li>
+            <li><span class="mono">gameplay</span> Modular Gameplay / Game Features patterns · Gameplay Tags · DataTables · custom GAS</li>
+            <li><span class="mono">ui</span> Slate · UMG · custom CommonUI-style framework</li>
+            <li><span class="mono">tools</span> [Perforce / Git] · [Rider / Visual Studio] · Unreal Insights</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-grid">
+      <p class="footer-name">[Your Name]</p>
+      <nav class="links links--footer" aria-label="Footer links">
+        <a href="[GITHUB_URL]">GitHub</a>
+        <a href="[RESUME_URL]">Résumé</a>
+        <a href="[REEL_URL]">Demo reel</a>
+        <a href="mailto:[EMAIL]">Email</a>
+      </nav>
+    </div>
+  </footer>
+
+  <!-- Modal root -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-panel" role="document">
+      <button class="modal-close" data-close aria-label="Close">✕</button>
+      <div class="modal-body" id="modal-body"><!-- injected --></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
