@@ -195,3 +195,19 @@ a { color: var(--amber); text-decoration: none; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
 }
+
+/* --- Uniform, centered cards --- */
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;   /* centers any partial last row */
+}
+.card {
+  flex: 0 1 320px;           /* fixed ~300px wide; shrinks on small screens */
+  height: 280px;             /* same height for every card */
+  text-align: center;        /* center the text */
+  align-items: center;       /* center the card's contents horizontally */
+}
+.card-stat {
+  align-self: center;        /* the stat badge was pinned left — center it */
+}
