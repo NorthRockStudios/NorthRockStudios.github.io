@@ -9,85 +9,85 @@ const PROJECTS = [
   {
     title: "Modular UObject Components",
     tag: "Data-driven actor composition controlled through FGameplayTag()'s",
-    stat: "0 subclasses per mode",
-    video: null,
+    stat: "Components replace inheritance",
+    video: "ZQQfKKbMuiA",
     problem:
-      "Game modes usually mean subclassing the core actors — a new AGameMode, PlayerController, and so on per mode. That doesn't scale and it hard-codes behavior into inheritance.",
+      "Core AActors require new types for each Game Mode. Ex: A new AGameMode, APlayerController, and so on per mode. This doesn't scale and it forces hard-coded behavior into inheritance.",
     approach:
-      "Bare-bones core actors carry no logic. A single GameMode FGameplayTag() resolves to a DataTable row listing the net-replicated UObject components each actor type needs. Adding or removing a mode's behavior is editing a tag list — no C++ subclasses. A distributed handshake around seamless travel tears down departing components pre-travel and builds new ones post-world-load, each phase gated on all-client RPC acknowledgment with a configurable timeout that drops stragglers. Stably-named components let replicated references resolve by name across server and client.",
+      "Core AActors are stripped and carry no logic. A single replicated FGameplayTag() represents our GameMode and resolves to a DataTable row listing that contains the UObject components each actor type needs. Adding or removing a mode's behavior is editing a tag list — no C++ subclasses. An RPC handshake around seamless travel reconciles components pre-travel and builds new ones post-world-load, each phase gated on all-client RPC acknowledgment with a configurable timeout that kicks stragglers. Components are stably-named which let replicated references resolve by FName across server and client.",
     result:
-      "Whole game modes are defined in data. The architecture parallels Epic's Game Features / Modular Gameplay system used in Lyra — reached from first principles.",
+      "Entire game modes are defined in DataTables. The architecture is a lighter version Epic's Modular Gameplay system that's used in Lyra.",
     tags: ["C++", "Modular Gameplay", "Replication", "Seamless travel", "Gameplay Tags"],
     source: null,
   },
   {
-    title: "ID Driven UDataTable",
+    title: "Load Balanced ID Driven Data",
     tag: "A tag-addressable DataTable registry where any row is accessible using a 4-byte Id.",
-    stat: "≈ [95]% less bandwidth",
+    stat: "≈ 95% less net bandwidth",
     video: null,
     problem:
-      "Replicating a reference to data-driven content (an item, an ability) normally means sending a soft object path or NetGUID, and it grows with the payload.",
+      "Replicating a reference to data-driven content (Ex. an item or an ability) normally requires replication of a soft object path or NetGUID, and it grows with the payload.",
     approach:
-      "A globally accessible DataTable registry addressable via FGameplayTag() or FGlobalDataID() lets any system fetch any table or row from anywhere, no hard references. Each row is identified by a 4-byte handle struct that encodes table Id + row Id. Clients resolve the handle locally to the exact row; heavy data never travels.",
+      "A globally accessible DataTable registry addressable via FGameplayTag() or FGlobalDataID() lets any system fetch any table or row from anywhere, no hard references. Each row is identified by a 4-byte handle struct that encodes table Id + row Id. Clients resolve the handle locally to the exact row; heavy data never travels.  The DataTable is also managed by a load balancer that keeps active DT's alive in memory longer and automatically unloads DT's that aren't within a certain period of time.",
     result:
-      "A constant [4] bytes per reference regardless of payload size — roughly [95]% smaller than [soft object path] replication. [Measured: X bytes vs Y bytes for Z.]",
+      "A constant 4 bytes per reference regardless of payload size — roughly 95% smaller than soft object path replication and requires little to no CPU cycles to Net Serialize.",
     tags: ["C++", "NetSerialize", "DataTables", "Gameplay Tags", "Bandwidth"],
     source: null,
   },
   {
-    title: "Light-weight GAS",
-    tag: "A customized light-weight GAS framework that has been heavily modified to reduce bandwidth usage.",
-    stat: "[N] ability types",
+    title: "Simplified Input Management",
+    tag: "Centralized input handling via priority layering. Allows any system to Add/Remove event/s to an input/s without having to touch the EnhancedInputSystem.",
+    stat: "No Tick() required",
     video: null,
     problem:
-      "Stock GAS is powerful but heavy and opinionated. I wanted a system tailored to the data-driven framework above [and lighter for X].",
+      "EnhancedInput can be a complicated mess to Add/Remove input events to - requiring Input Actions, Mappings, and access to the local players InputComponent.",
     approach:
-      "Implemented attributes, gameplay effects, and tag-gated ability activation from the ground up, [with client-predicted activation and server reconciliation].",
+      "Move input control over to a globally accessible subsystem that can be accessed where ever we have a world context object. This system will receive input directly from our GameInstance object and will be a level below EnhancedInput and actually control which inputs are fed into EnhancedInput after our priority check.",
     result:
-      "A working ability layer integrated with the modular framework, supporting [N] ability types and [prediction / cooldowns / cost].",
-    tags: ["C++", "Gameplay Tags", "Prediction", "Replication"],
+      "Easy to manage input events from anywhere that gives us complete control over raw inputs from the player. This also reduces the cost of reading each input by allowing us to add/remove blacklisted keybinds that are completely disregarded.",
+    tags: ["C++","Input routing", "Enhanced Input"],
     source: null,
   },
   {
-    title: "UI framework",
-    tag: "A CommonUI-style framework written directly on the Slate layer, not the UMG designer.",
-    stat: "hand-written Slate",
+    title: "Automated UI Layout & Layering",
+    tag: "A faster CommonUI-style framework",
+    stat: "Automatic UI sizing/layering",
     video: null,
     problem:
-      "The UMG designer hits limits for input routing and layered, stack-based UI. I wanted full control at the widget level.",
+      "The UMG designer hits limits for input routing and automating UI layering. I wanted full control at the lowest level possible to have my UI manage itself.",
     approach:
-      "Built activatable widget stacks, layer management, and input routing as hand-written Slate widgets — a CommonUI equivalent tailored to the project.",
+      "Build an automated priority grid-based layer management that displays and routes inputs based on highest priority layer. Create a Base UI object type that automatically converts the UI's size to the Rows/Cols the UI occupies along with a layer enum that determines if its activateable along with which layer it's placed on.",
     result:
-      "[N] reusable widget types with [gamepad / KBM] input routing and a clean layering model.",
+      "Completely automated UI input routing, layering, and placement that uses a grid based system similar to our Inventory's Grid system. UI will be placed within an active layer so long as the layer has space for it's required Row/Col amount.",
     tags: ["C++", "Slate", "UMG", "Input routing"],
     source: null,
   },
   {
-    title: "FAS Inventory System",
-    tag: "Multiple inventory types over Fast Array Serialization, each item a 4-byte handle.",
-    stat: "delta-only sync",
+    title: "FAS Inventory Grid System",
+    tag: "Multiple inventory types over Fast Array Serialization, each item uses our ID'ing UDataTable system.",
+    stat: "Efficient net delta sync",
     video: null,
     problem:
-      "Naive inventory replication resends the whole container on every change and ships full item structs across the wire.",
+      "UPROPERTY(Replicated) TArray<> inventory replication not only resends the entire container for every change it also ships full item structs across the network which annihilates bandwidth and overworks our server's CPU.",
     approach:
-      "A modular base supports equipment, crafting, storage, and more. State replicates via Fast Array Serialization, so only changed slots go out — and each slot is the 4-byte handle, so item detail (name, icon, stats) stays off the network and resolves locally.",
+      "A modular base that supports equipment, crafting, storage, and other inventory types. State replicates via Fast Array Serialization, so only items marked dirty go out — and each item uses our 4-byte ID handle so item details like name, icon, stats, etc. stay off the network and resolve locally.",
     result:
-      "An inventory update costs roughly [4 bytes × changed items], independent of item complexity. [X bytes vs Y bytes for a Z-item loot.]",
-    tags: ["C++", "Fast Array Serialization", "Replication", "DataTables"],
+      "An inventory item's details and placement update costs roughly 6 bytes per item (outside of RPC header costs) since we completely avoid replicating any costly strings and allow clients to resolve item details locally from our DataTables.",
+    tags: ["C++", "Fast Array Serialization", "Replication", "DataTables", "InstancedStruct"],
     source: null,
   },
   {
-    title: "Custom replication layer",
-    tag: "A bespoke replication path built against both legacy property replication and Iris.",
-    stat: "Legacy + Iris",
+    title: "Editor Tooling",
+    tag: "Slate based Editor UI that make modifying Editor based data, like UDataTable's, more streamline.",
+    stat: "Designer friendly editor UI",
     video: null,
     problem:
-      "[The default NetDriver path didn't handle X well / I needed a replication pattern stock replication couldn't express efficiently.]",
+      "Structs/Classes containing multiple variables using UPROPERTY(EditDefaultsOnly) are extremely limited on how you can control their editor layout especially if you need custom restrictions or you want to use outside data to affect available options",
     approach:
-      "Designed and implemented a custom replication layer targeting both the legacy property-replication path and the newer Iris replication system, [with custom NetSerialize and subobject handling].",
+      "Use IPropertyTypeCustomization along with Slate to create customized property editor UI.",
     result:
-      "Reduced [replication CPU / bytes-per-actor] by [N]% versus stock replication under [conditions].",
-    tags: ["C++", "Legacy replication", "Iris", "NetSerialize"],
+      "Tailored UI that gives full control on how you modify a property inside the Editor",
+    tags: ["C++", "Property Customization", "Editor", "Slate", "UMG", "UI"],
     source: null,
   },
 ];
@@ -118,7 +118,7 @@ let lastFocused = null;
 
 function videoBlock(p) {
   if (p.video) {
-    return `<div class="modal-video"><iframe src="https://www.youtube.com/embed/${p.video}" title="${p.title} demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>`;
+    return `<div class="modal-video"><iframe src="https://www.youtube.com/embed/${p.video}" title="${p.title} demo" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe></div>`;
   }
   return `<div class="modal-video"><div class="modal-video-placeholder"><span>▶ demo video</span><span>add a YouTube ID to this project in app.js</span></div></div>`;
 }
