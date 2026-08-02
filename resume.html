@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Michael DeHart — Résumé</title>
+  <meta name="description" content="Résumé — Michael DeHart, Unreal Engine C++ / Gameplay Systems Programmer." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .resume-page { max-width: 1000px; margin: 0 auto; padding: clamp(40px, 8vh, 80px) 28px; }
+    .resume-back {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font-mono); font-size: 14px; color: var(--text-dim);
+      margin-bottom: 28px;
+    }
+    .resume-back:hover { color: var(--amber); }
+    .resume-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 20px; flex-wrap: wrap; margin-bottom: 22px;
+    }
+    .resume-bar h1 {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(1.8rem, 4vw, 2.6rem); letter-spacing: -0.02em; margin: 0;
+    }
+    .resume-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn {
+      font-family: var(--font-mono); font-size: 14px; cursor: pointer;
+      padding: 10px 16px; border-radius: 8px; text-decoration: none;
+      border: 1px solid var(--line-strong); color: var(--text);
+      transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+    }
+    .btn:hover { border-color: var(--amber-line); color: var(--amber); background: var(--amber-tint); }
+    .btn--primary { background: var(--amber); color: var(--ink); border-color: var(--amber); font-weight: 500; }
+    .btn--primary:hover { background: #f0c46a; color: var(--ink); }
+    .resume-viewer {
+      border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+      background: var(--panel); height: 85vh; min-height: 560px;
+    }
+    .resume-viewer iframe { width: 100%; height: 100%; border: 0; display: block; }
+    .resume-fallback {
+      display: none; padding: 40px 24px; text-align: center; color: var(--text-dim);
+      font-size: 0.95rem; line-height: 1.7;
+    }
+    /* On small screens, inline PDF viewers are unreliable — hide the frame, show the buttons + note */
+    @media (max-width: 640px) {
+      .resume-viewer { height: auto; min-height: 0; }
+      .resume-viewer iframe { display: none; }
+      .resume-fallback { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <div class="resume-page">
+    <a class="resume-back" href="index.html"><span class="mono">←</span> Back to portfolio</a>
+
+    <div class="resume-bar">
+      <h1>Résumé</h1>
+      <div class="resume-actions">
+        <a class="btn" href="MichaelDeHartResume.pdf" target="_blank" rel="noopener">Open in new tab ↗</a>
+      </div>
+    </div>
+
+    <div class="resume-viewer">
+      <iframe src="MichaelDeHartResume.pdf#view=FitH&toolbar=1" title="[Your Name] résumé"></iframe>
+      <div class="resume-fallback">
+        Your device may not preview PDFs inline.<br />
+        Use <strong>Open in new tab</strong> or <strong>Download PDF</strong> above to view it.
+      </div>
+    </div>
+  </div>
+</body>
+</html>
